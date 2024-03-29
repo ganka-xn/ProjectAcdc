@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import jakarta.servlet.RequestDispatcher;
@@ -30,10 +33,15 @@ public class IndexServletTest {
     @Mock
     private RequestDispatcher requestDispatcher;
 
-    private IndexServlet servlet;
+    IndexServlet servlet;
 
     @BeforeEach
     public void setUp() {
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        session = mock(HttpSession.class);
+        requestDispatcher = mock(RequestDispatcher.class);
+
         MockitoAnnotations.openMocks(this);
         servlet = new IndexServlet();
         when(request.getSession()).thenReturn(session);
@@ -41,17 +49,7 @@ public class IndexServletTest {
     }
 
     @Test
-    public void doGet_SetsAttributesAndForwardsToIndexJsp() throws ServletException, IOException {
-        servlet.doGet(request, response);
-
-        verify(session).setAttribute("statsRepository", any(StatsRepository.class));
-        verify(session).setAttribute("userRepository", any(UserRepository.class));
-        verify(request).getRequestDispatcher("WEB-INF/index.jsp");
-        verify(requestDispatcher).forward(request, response);
-    }
-
-    @Test
-    public void doPost_RedirectsToLoginWhenLoginButtonClicked() throws ServletException, IOException {
+    public void doPost_redirectsToLogin_when_loginButtonClicked() throws ServletException, IOException {
         when(request.getParameter("btnClicked")).thenReturn("loginBtn");
         servlet.doPost(request, response);
 

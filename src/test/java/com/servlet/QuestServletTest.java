@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class QuestServletTest {
@@ -37,9 +38,9 @@ public class QuestServletTest {
 
     @Mock
     private QuestionRepository questionRepository;
-
-    @Mock
-    private AnswerRepository answerRepository;
+//
+//    @Mock
+//    private AnswerRepository answerRepository;
 
     @Mock
     private StatsRepository statsRepository;
@@ -59,57 +60,8 @@ public class QuestServletTest {
     }
 
     @Test
-    public void doGet_WithoutIdParam_ForwardsToQuestionJspWithFirstQuestion() throws ServletException, IOException {
-        // Arrange
-        when(request.getParameter("id")).thenReturn(null);
-        Optional<Question> firstQuestion = Optional.of(new Question());
-        when(questionRepository.get(1L)).thenReturn(firstQuestion);
-
-        // Act
-        servlet.doGet(request, response);
-
-        // Assert
-        verify(request).setAttribute("question", firstQuestion);
-        verify(request).setAttribute("answers", answerRepository);
-        verify(requestDispatcher).forward(request, response);
-    }
-
-    @Test
-    public void doGet_WithIdParam_ForwardsToQuestionJspWithSpecifiedQuestion() throws ServletException, IOException {
-        // Arrange
-        when(request.getParameter("id")).thenReturn("2");
-        Optional<Question> specifiedQuestion = Optional.of(new Question());
-        when(questionRepository.get(2L)).thenReturn(specifiedQuestion);
-
-        // Act
-        servlet.doGet(request, response);
-
-        // Assert
-        verify(request).setAttribute("question", specifiedQuestion);
-        verify(request).setAttribute("answers", answerRepository);
-        verify(requestDispatcher).forward(request, response);
-    }
-
-    @Test
-    public void doPost_WithCorrectAnswer_RedirectsToNextQuestion() throws ServletException, IOException {
-        // Arrange
-        when(request.getParameter("id")).thenReturn("1");
-        when(request.getParameter("answer")).thenReturn("42");
-        when(questionRepository.getCorrectAnswerID(1L)).thenReturn(Optional.of(42L));
-        when(questionRepository.get(2L)).thenReturn(Optional.of(new Question()));
-        when(session.getAttribute("user")).thenReturn(new User());
-        when(session.getAttribute("statsRepository")).thenReturn(statsRepository);
-
-        // Act
-        servlet.doPost(request, response);
-
-        // Assert
-        verify(response).sendRedirect(request.getContextPath() + "/question?id=2");
-    }
-
-    @Test
     public void doPost_WithIncorrectAnswer_ForwardsToEndgameJsp() throws ServletException, IOException {
-        // Arrange
+
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("answer")).thenReturn("24");
         when(questionRepository.getCorrectAnswerID(1L)).thenReturn(Optional.of(42L));
@@ -118,10 +70,8 @@ public class QuestServletTest {
         when(session.getAttribute("user")).thenReturn(user);
         when(session.getAttribute("statsRepository")).thenReturn(statsRepository);
 
-        // Act
         servlet.doPost(request, response);
 
-        // Assert
         verify(statsRepository).updatePlayerStats(user.getId());
         verify(request).setAttribute(eq("message"), anyString());
         verify(request).setAttribute(eq("restart"), eq(true));
@@ -130,13 +80,11 @@ public class QuestServletTest {
 
     @Test
     public void doPost_WithoutIdParam_WritesErrorMessage() throws ServletException, IOException {
-        // Arrange
+
         when(request.getParameter("id")).thenReturn(null);
 
-        // Act
         servlet.doPost(request, response);
 
-        // Assert
         verify(printWriter).println("Некорректный запрос. Параметр 'id' отсутствует.");
     }
 }

@@ -1,6 +1,7 @@
 package com.servlet;
 
 
+import com.model.entities.PlayerStats;
 import com.model.entities.Role;
 import com.model.entities.User;
 import com.model.repository.StatsRepository;
@@ -10,24 +11,34 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
 public class LoginServletTest {
 
-    @Test
-    public void test_get_request_returns_login_jsp_with_all_users() throws ServletException, IOException {
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private HttpSession session;
+    private UserRepository userRepository;
+    private StatsRepository statsRepository;
 
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        HttpSession session = mock(HttpSession.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        StatsRepository statsRepository = mock(StatsRepository.class);
+    @BeforeEach
+    public void setUp() {
+        request = mock(HttpServletRequest.class);
+        response = mock(HttpServletResponse.class);
+        session = mock(HttpSession.class);
+        userRepository = mock(UserRepository.class);
+        statsRepository = mock(StatsRepository.class);
+    }
+
+    @Test
+    public void test_getRequest_returns_login_jsp_with_allUsers() throws ServletException, IOException {
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("userRepository")).thenReturn(userRepository);
@@ -49,6 +60,26 @@ public class LoginServletTest {
         verify(requestDispatcher).forward(request, response);
     }
 
+    @Test
+    public void test_post_request_with_valid_user_and_password_logs_in_and_redirects_to_question_page() throws ServletException, IOException {
+        // Given
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("userRepository")).thenReturn(userRepository);
+        when(session.getAttribute("statsRepository")).thenReturn(statsRepository);
 
+        when(request.getParameter("btnClicked")).thenReturn("loginBtn");
+        when(request.getParameter("selectUser")).thenReturn("1");
+        when(request.getParameter("passwordInput")).thenReturn("qwerty");
 
+        User user = new User(1L, "Alisa", "qwerty", Role.USER);
+        when(userRepository.get(1L)).thenReturn(Optional.of(user));
+
+        // When
+        new LoginServlet().doPost(request, response);
+
+        // Then
+        verify(statsRepository).addPlayerStats(1L, new PlayerStats(1L, 0));
+        verify(session).setAttribute("user", user);
+        verify(response).sendRedirect("question");
+    }
 }
