@@ -1,4 +1,4 @@
-package com.javarush.khmelov.lesson14.entity;
+package com.model.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,9 +18,5 @@ public class User {
     private String password;
 
     private Role role;
-
-    public String getImage() { //TODO move to DTO
-        return "image-" + id;
-    }
 
 }

@@ -1,15 +1,15 @@
-package com.javarush.khmelov.lesson14.repository;
+package com.model.repository;
 
-import com.javarush.khmelov.lesson14.entity.User;
+import com.model.entities.User;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public interface Repository<T> {
 
-    Collection<User> getAll();
+    Collection<T> getAll();
 
-    Optional<T> get(long id);
+    Optional<T> get(Long id);
 
     void create(T entity);
 
