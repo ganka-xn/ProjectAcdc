@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
+/** todo допилить */
+
 public class LoginServletTest {
 
     private HttpServletRequest request;
@@ -52,17 +54,14 @@ public class LoginServletTest {
         RequestDispatcher requestDispatcher = mock(RequestDispatcher.class);
         when(request.getRequestDispatcher("WEB-INF/login.jsp")).thenReturn(requestDispatcher);
 
-        // When
         new LoginServlet().doGet(request, response);
 
-        // Then
         verify(request).setAttribute("users", userRepository.getAll());
         verify(requestDispatcher).forward(request, response);
     }
 
     @Test
     public void test_post_request_with_valid_user_and_password_logs_in_and_redirects_to_question_page() throws ServletException, IOException {
-        // Given
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("userRepository")).thenReturn(userRepository);
         when(session.getAttribute("statsRepository")).thenReturn(statsRepository);
@@ -74,10 +73,8 @@ public class LoginServletTest {
         User user = new User(1L, "Alisa", "qwerty", Role.USER);
         when(userRepository.get(1L)).thenReturn(Optional.of(user));
 
-        // When
         new LoginServlet().doPost(request, response);
 
-        // Then
         verify(statsRepository).addPlayerStats(1L, new PlayerStats(1L, 0));
         verify(session).setAttribute("user", user);
         verify(response).sendRedirect("question");

@@ -22,6 +22,5 @@
         </form>
     </c:if>
 </div>
+
 <c:import url="parts/footer.jsp"/>
-<%--</body>--%>
-<%--</html>--%>

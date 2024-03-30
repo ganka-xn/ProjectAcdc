@@ -17,6 +17,7 @@ public class User {
 
     private String password;
 
+    /** todo допилить использование ролей */
     private Role role;
 
 }

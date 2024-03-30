@@ -1,14 +1,9 @@
 package com.servlet;
 
-import com.model.repository.StatsRepository;
-import com.model.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import jakarta.servlet.RequestDispatcher;
@@ -18,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+
+/** todo допилить */
 
 public class IndexServletTest {
 

@@ -1,8 +1,6 @@
 package com.servlet;
 
-import com.model.entities.Question;
 import com.model.entities.User;
-import com.model.repository.AnswerRepository;
 import com.model.repository.QuestionRepository;
 import com.model.repository.StatsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +20,8 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Optional;
 
+/** todo допилить */
+
 public class QuestServletTest {
 
     @Mock
@@ -38,9 +38,6 @@ public class QuestServletTest {
 
     @Mock
     private QuestionRepository questionRepository;
-//
-//    @Mock
-//    private AnswerRepository answerRepository;
 
     @Mock
     private StatsRepository statsRepository;
